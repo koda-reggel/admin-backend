@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use App\Models\User;  // <-- Add this line to import the User model
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;  // Import Hash facade
+use App\Http\Controllers\Controller;
 
 class AuthController extends Controller
 {
@@ -30,12 +31,12 @@ class AuthController extends Controller
             'email' => 'required|email',
             'password' => 'required',
         ]);
-    
+
         \Log::info('Login Attempt', ['email' => $request->email, 'password' => $request->password]);
 
         // Retrieve the user by email
         $user = User::where('email', $request->email)->first();
-    
+
         // Check if the user exists and if the hashed password matches
         if ($user && Hash::check($request->password, $user->password)) {
             // Generate and return a token if credentials are valid
@@ -48,7 +49,7 @@ class AuthController extends Controller
                 'user' => $user
             ]);
         }
-    
+
         return response()->json([
             'message' => 'Unauthorized'
         ], 401);
