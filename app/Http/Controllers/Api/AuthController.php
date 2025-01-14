@@ -11,18 +11,22 @@ class AuthController extends Controller
 {
     public function register(Request $request)
     {
-        $fields = $request->validate([
-            'name' => 'required|max:255',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|confirmed'
-        ]);
+        // $fields = $request->validate([
+        //     'name' => 'required|max:255',
+        //     'email' => 'required|email|unique:users',
+        //     'password' => 'required|confirmed'
+        // ]);
 
-        $user = User::create($fields);
-        $token = $user->createToken($request->name);
-        return [
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => $request->password
+        ]);
+        $token = $user->createToken($request->name)->accessToken; 
+        return  response()->json([
             'user' => $user,
             'token' => $token
-        ];
+        ], 200);
     }
 
     public function login(Request $request)
